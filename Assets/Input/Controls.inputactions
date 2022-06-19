@@ -1,0 +1,54 @@
+{
+    "name": "Controls",
+    "maps": [
+        {
+            "name": "actions",
+            "id": "22a5b0b9-6851-4e72-a050-accf9d6a9637",
+            "actions": [
+                {
+                    "name": "Mouse",
+                    "type": "Value",
+                    "id": "b8613af7-f774-4ba1-bb4c-dda597977b57",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Reroll",
+                    "type": "Button",
+                    "id": "f6d5d788-3f62-4c70-b977-b0c4329eb3a0",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "4cc50dfb-c2da-40b7-a091-586f5b70c954",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Mouse",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2f9e91f5-eaa7-4802-a0f2-76454b8ed3d1",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Reroll",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
