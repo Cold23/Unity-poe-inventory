@@ -7,6 +7,7 @@ public static class MouseObject
     static bool dragging = false;
     static DropArea hoveredDropArea;
     static GameObject draggingObject;
+    static Inventory mouseOverInventory;
 
     public static bool Dragging { get => dragging; set => dragging = value; }
     public static GameObject DraggingObject { get => draggingObject; set => draggingObject = value; }
@@ -18,6 +19,15 @@ public static class MouseObject
     public static void clearHovered()
     {
         hoveredDropArea = null;
+    }
+
+    public static void setInventory(Inventory inv)
+    {
+        mouseOverInventory = inv;
+    }
+    public static void clearInventory()
+    {
+        mouseOverInventory = null;
     }
 
     public static void set(GameObject obj)

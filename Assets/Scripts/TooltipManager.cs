@@ -25,6 +25,7 @@ public class TooltipManager : MonoBehaviour
     Image innerPanelImage;
     Image outerPanelImage;
     Image dividerImage;
+    int? currentId;
 
 
     private void Awake()
@@ -57,6 +58,7 @@ public class TooltipManager : MonoBehaviour
 
     public void hideTooltip(bool instant = false)
     {
+        currentId = null;
         DOTween.Kill("fade");
         if (instant)
         {
@@ -69,8 +71,10 @@ public class TooltipManager : MonoBehaviour
         }
     }
 
-    public void showTooltip(string titleText, string content, Vector2 position, Vector2 sizeDelta)
+    public void showTooltip(string titleText, string content, Vector2 position, Vector2 sizeDelta, int id)
     {
+        if (currentId == id) return;
+        currentId = id;
         DOTween.Kill("fade");
         title.text = titleText;
         text.text = content;

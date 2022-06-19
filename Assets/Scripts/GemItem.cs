@@ -38,6 +38,7 @@ public class UIItem : TooltipHoverObject, IDraggableItem
         MouseObject.set(gameObject);
         isBeingDragged = true;
         transform.SetParent(dragCanvas);
+        transform.SetAsLastSibling();
     }
 
     public void OnPointerUp(PointerEventData eventData)
@@ -77,7 +78,7 @@ public class GemItem : UIItem
         }
 
         var finalString = new string(stringChars);
-        TooltipManager.instance.showTooltip("Rain gem", finalString, rectTransform.position, rectTransform.sizeDelta);
+        TooltipManager.instance.showTooltip("Rain gem", finalString, rectTransform.position, rectTransform.sizeDelta, gameObject.GetInstanceID());
     }
 
     private void OnEnable()

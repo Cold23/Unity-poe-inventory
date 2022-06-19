@@ -42,7 +42,7 @@ public class GenericItem : UIItem
         }
 
         var finalString = new string(stringChars);
-        TooltipManager.instance.showTooltip("Supa armor", finalString, rectTransform.position, rectTransform.sizeDelta);
+        TooltipManager.instance.showTooltip("Supa armor", finalString, rectTransform.position, rectTransform.sizeDelta, gameObject.GetInstanceID());
     }
 
     private void OnEnable()

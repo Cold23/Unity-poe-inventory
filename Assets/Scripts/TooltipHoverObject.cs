@@ -4,11 +4,12 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 
-public class TooltipHoverObject : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class TooltipHoverObject : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerMoveHandler
 {
     public void OnPointerEnter(PointerEventData eventData)
     {
         onShowTooltip();
+
     }
 
     public virtual void onShowTooltip()
@@ -20,5 +21,9 @@ public class TooltipHoverObject : MonoBehaviour, IPointerEnterHandler, IPointerE
     {
         TooltipManager.instance.hideTooltip(true);
 
+    }
+
+    public void OnPointerMove(PointerEventData eventData)
+    {
     }
 }

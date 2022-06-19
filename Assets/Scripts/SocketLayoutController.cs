@@ -7,14 +7,12 @@ public class SocketLayoutController : Inventory
     [SerializeField]
     Transform connectionsParent;
     [SerializeField]
-    float itemSize = 70;
-    [SerializeField]
     GameObject connectionLinePrefab;
     [SerializeField]
     int maxSocketCount = 6;
 
+    #region socket Reroll test
 
-    #region test
     Controls controls;
 
     private void OnEnable()

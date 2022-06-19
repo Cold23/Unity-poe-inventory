@@ -7,15 +7,17 @@ using UnityEngine.UI;
 public class InventorySlot : DropArea
 {
     [SerializeField]
+    RectTransform itemParent;
+    [SerializeField]
     GameObject initialItem;
     GameObject itemInSlot;
     RectTransform rectTransform;
     Inventory belongsTo;
+    Vector2 position = Vector2.zero;
 
     protected virtual void Awake()
     {
         belongsTo = GetComponentInParent<Inventory>();
-        Debug.Log(belongsTo);
         rectTransform = GetComponent<RectTransform>();
         if (initialItem != null)
         {
@@ -44,9 +46,9 @@ public class InventorySlot : DropArea
     public virtual void setItem(GameObject item)
     {
         itemInSlot = item;
-        itemInSlot.transform.SetParent(transform);
+        itemInSlot.transform.SetParent(itemParent);
         var rect = itemInSlot.GetComponent<RectTransform>();
-        rect.anchoredPosition = new Vector2(rectTransform.rect.width / 2 - rect.rect.width / 2, rectTransform.rect.height / 2 - rect.rect.height / 2);
+        rect.anchoredPosition = new Vector2(itemParent.rect.width / 2 - rect.rect.width / 2, itemParent.rect.height / 2 - rect.rect.height / 2);
 
         var itemScript = item.GetComponent<UIItem>();
         itemScript.setOrigin(this);
