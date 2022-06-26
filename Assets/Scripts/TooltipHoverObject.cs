@@ -17,6 +17,8 @@ public class TooltipHoverObject : MonoBehaviour, IPointerEnterHandler, IPointerE
 
     }
 
+    public virtual void onMouseMoved(){}
+
     public void OnPointerExit(PointerEventData eventData)
     {
         TooltipManager.instance.hideTooltip(true);

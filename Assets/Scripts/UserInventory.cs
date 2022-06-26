@@ -9,6 +9,10 @@ public class InventorySlotData
     public RectTransform rect;
     public Vector2Int position;
 
+    public bool isEmpty() {
+        return inventorySlot.getItem() == null;
+    }
+
     public InventorySlotData(InventorySlot slot, RectTransform rect, Vector2Int position)
     {
         this.inventorySlot = slot;
@@ -33,6 +37,7 @@ public class UserInventory : Inventory
             var pos = new Vector2Int(xIndex, yIndex);
             var obj = GameObject.Instantiate(emptySlotPrefab, transform);
             var inventorySlot = obj.GetComponent<InventorySlot>();
+            inventorySlot.setPos(pos);
             var slotRect = obj.GetComponent<RectTransform>();
             slotData.Add(pos, new InventorySlotData(inventorySlot, slotRect, pos));
             xIndex++;
@@ -42,6 +47,12 @@ public class UserInventory : Inventory
                 yIndex++;
             }
         }
+    }
+    public override bool isSlotEmptyAtPos(Vector2Int pos)
+    {
+        slotData.TryGetValue(pos, out var slot);
+        if(slot == null) return false;
+        return slot.isEmpty();
     }
     private void Awake()
     {

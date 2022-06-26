@@ -19,6 +19,10 @@ public class Inventory : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         return inventorySize;
     }
 
+    public virtual bool isSlotEmptyAtPos(Vector2Int pos) {
+        return true;
+    }
+
     protected virtual void init()
     {
         for (int i = 0; i < inventorySize; i++)

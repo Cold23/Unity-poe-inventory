@@ -4,8 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 public class GenericItem : UIItem
 {
-    RectTransform rectTransform;
-
     Controls controls;
     [SerializeField]
     Image mainItemImage;
@@ -18,6 +16,7 @@ public class GenericItem : UIItem
         canvas = GameObject.FindGameObjectWithTag("UI Canvas").GetComponent<RectTransform>();
         controls = new Controls();
         rectTransform = GetComponent<RectTransform>();
+        
     }
 
     public override void DisableRaycast()
@@ -48,6 +47,11 @@ public class GenericItem : UIItem
     private void OnEnable()
     {
         controls.Enable();
+        
+        controls.actions.MouseMove.performed += _ =>
+        {
+            onMouseMoved();
+        };
     }
 
     private void OnDisable()
@@ -69,7 +73,7 @@ public class GenericItem : UIItem
 
     private void setSelfPosition(Vector2 position)
     {
-
+        position.y -= canvas.rect.height;
         var pos = new Vector2((position.x / rectTransform.lossyScale.x), (position.y / rectTransform.lossyScale.y)); // convert to current canvas position
 
         if (pos.x < 0)
@@ -81,13 +85,13 @@ public class GenericItem : UIItem
             pos.x = canvas.rect.width - rectTransform.rect.width;
         }
 
-        if (pos.y < 0)
+        if (pos.y > -rectTransform.rect.height)
         {
-            pos.y = 0;
+            pos.y = -rectTransform.rect.height;
         }
-        else if (pos.y + rectTransform.rect.height > canvas.rect.height)
+        else if (pos.y < -canvas.rect.height)
         {
-            pos.y = canvas.rect.height - rectTransform.rect.height;
+            pos.y = -canvas.rect.height;
         }
 
         rectTransform.anchoredPosition = pos;

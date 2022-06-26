@@ -44,6 +44,15 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MouseMove"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""3eaa6bcd-cefa-4f6b-9ed0-9dd5f396db73"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -68,6 +77,17 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                     ""action"": ""Reroll"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d8308b56-6410-4903-a21d-c25f52ddd3b9"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MouseMove"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -78,6 +98,7 @@ public partial class @Controls : IInputActionCollection2, IDisposable
         m_actions = asset.FindActionMap("actions", throwIfNotFound: true);
         m_actions_Mouse = m_actions.FindAction("Mouse", throwIfNotFound: true);
         m_actions_Reroll = m_actions.FindAction("Reroll", throwIfNotFound: true);
+        m_actions_MouseMove = m_actions.FindAction("MouseMove", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -139,12 +160,14 @@ public partial class @Controls : IInputActionCollection2, IDisposable
     private IActionsActions m_ActionsActionsCallbackInterface;
     private readonly InputAction m_actions_Mouse;
     private readonly InputAction m_actions_Reroll;
+    private readonly InputAction m_actions_MouseMove;
     public struct ActionsActions
     {
         private @Controls m_Wrapper;
         public ActionsActions(@Controls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Mouse => m_Wrapper.m_actions_Mouse;
         public InputAction @Reroll => m_Wrapper.m_actions_Reroll;
+        public InputAction @MouseMove => m_Wrapper.m_actions_MouseMove;
         public InputActionMap Get() { return m_Wrapper.m_actions; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -160,6 +183,9 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                 @Reroll.started -= m_Wrapper.m_ActionsActionsCallbackInterface.OnReroll;
                 @Reroll.performed -= m_Wrapper.m_ActionsActionsCallbackInterface.OnReroll;
                 @Reroll.canceled -= m_Wrapper.m_ActionsActionsCallbackInterface.OnReroll;
+                @MouseMove.started -= m_Wrapper.m_ActionsActionsCallbackInterface.OnMouseMove;
+                @MouseMove.performed -= m_Wrapper.m_ActionsActionsCallbackInterface.OnMouseMove;
+                @MouseMove.canceled -= m_Wrapper.m_ActionsActionsCallbackInterface.OnMouseMove;
             }
             m_Wrapper.m_ActionsActionsCallbackInterface = instance;
             if (instance != null)
@@ -170,6 +196,9 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                 @Reroll.started += instance.OnReroll;
                 @Reroll.performed += instance.OnReroll;
                 @Reroll.canceled += instance.OnReroll;
+                @MouseMove.started += instance.OnMouseMove;
+                @MouseMove.performed += instance.OnMouseMove;
+                @MouseMove.canceled += instance.OnMouseMove;
             }
         }
     }
@@ -178,5 +207,6 @@ public partial class @Controls : IInputActionCollection2, IDisposable
     {
         void OnMouse(InputAction.CallbackContext context);
         void OnReroll(InputAction.CallbackContext context);
+        void OnMouseMove(InputAction.CallbackContext context);
     }
 }

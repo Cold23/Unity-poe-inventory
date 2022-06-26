@@ -6,6 +6,8 @@ using UnityEngine.EventSystems;
 
 public class UIItem : TooltipHoverObject, IDraggableItem
 {
+    public List<Vector2Int> occupiesSpots;
+    protected RectTransform rectTransform;
     protected bool isBeingDragged = false;
     protected RectTransform canvas;
     protected RectTransform dragCanvas;
@@ -48,11 +50,35 @@ public class UIItem : TooltipHoverObject, IDraggableItem
         isBeingDragged = false;
 
     }
+
+    public override void onMouseMoved()
+    {
+        if(!isBeingDragged) return;
+
+        PointerEventData evData = new PointerEventData(EventSystem.current);
+
+        evData.position = new Vector2(rectTransform.position.x, rectTransform.position.y + rectTransform.rect.height);
+
+
+        List<RaycastResult> results = new List<RaycastResult>();
+
+        EventSystem.current.RaycastAll(evData, results);
+
+        results.RemoveAll((el) =>
+        {
+            var slotObject = el.gameObject.GetComponent<InventorySlot>();
+            if(slotObject == null) {
+                return true;
+            }
+            Debug.Log(slotObject.CheckItemFits(this));
+            return false;
+        });
+        Debug.Log(results.Count);
+    }
 }
 
 public class GemItem : UIItem
 {
-    RectTransform rectTransform;
 
     Controls controls;
     [SerializeField] Image dragImage;
@@ -105,7 +131,7 @@ public class GemItem : UIItem
 
     private void setSelfPosition(Vector2 position)
     {
-
+        position.y -= canvas.rect.height;
         var pos = new Vector2((position.x / rectTransform.lossyScale.x), (position.y / rectTransform.lossyScale.y)); // convert to current canvas position
 
         if (pos.x < 0)
@@ -117,13 +143,13 @@ public class GemItem : UIItem
             pos.x = canvas.rect.width - rectTransform.rect.width;
         }
 
-        if (pos.y < 0)
+        if (pos.y > -rectTransform.rect.height)
         {
-            pos.y = 0;
+            pos.y = -rectTransform.rect.height;
         }
-        else if (pos.y + rectTransform.rect.height > canvas.rect.height)
+        else if (pos.y < -canvas.rect.height)
         {
-            pos.y = canvas.rect.height - rectTransform.rect.height;
+            pos.y = -canvas.rect.height;
         }
 
         rectTransform.anchoredPosition = pos;
