@@ -6,13 +6,17 @@ using UnityEngine.EventSystems;
 
 public class UIItem : TooltipHoverObject, IDraggableItem
 {
+    protected Controls controls;
     public List<Vector2Int> occupiesSpots;
     protected RectTransform rectTransform;
     protected bool isBeingDragged = false;
     protected RectTransform canvas;
     protected RectTransform dragCanvas;
-
+    Color baseColor = new Color(0.6f, 0.6f, 0.6f, 0.4f);
+    protected Image bgImage;
     protected InventorySlot originatedFrom;
+    protected bool fitsInventory = false;
+    protected InventorySlot hoveredSlot;
 
     public void setOrigin(InventorySlot from)
     {
@@ -35,9 +39,9 @@ public class UIItem : TooltipHoverObject, IDraggableItem
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        originatedFrom?.removeItem();
+        originatedFrom?.onItemRemoved();
         DisableRaycast();
-        MouseObject.set(gameObject);
+        MouseObject.set(this);
         isBeingDragged = true;
         transform.SetParent(dragCanvas);
         transform.SetAsLastSibling();
@@ -51,13 +55,17 @@ public class UIItem : TooltipHoverObject, IDraggableItem
 
     }
 
+    public InventorySlot getHovered() {
+        return hoveredSlot;
+    }
+
     public override void onMouseMoved()
     {
         if(!isBeingDragged) return;
 
         PointerEventData evData = new PointerEventData(EventSystem.current);
 
-        evData.position = new Vector2(rectTransform.position.x, rectTransform.position.y + rectTransform.rect.height);
+        evData.position = controls.actions.Mouse.ReadValue<Vector2>() + new Vector2(-rectTransform.rect.width/2,rectTransform.rect.height/2);
 
 
         List<RaycastResult> results = new List<RaycastResult>();
@@ -70,23 +78,33 @@ public class UIItem : TooltipHoverObject, IDraggableItem
             if(slotObject == null) {
                 return true;
             }
-            Debug.Log(slotObject.CheckItemFits(this));
+            fitsInventory = slotObject.CheckItemFits(this);
+            if(fitsInventory){
+                hoveredSlot = slotObject;
+                bgImage.color = new Color(0,1,0,0.4f);
+            }else {
+                hoveredSlot = null;
+                bgImage.color = new Color(1,0,0,0.4f);
+            }
             return false;
         });
-        Debug.Log(results.Count);
+        if(results.Count <= 0) {
+            hoveredSlot = null;
+            fitsInventory = false;
+            bgImage.color = baseColor;
+        }
+        
     }
 }
 
 public class GemItem : UIItem
 {
 
-    Controls controls;
     [SerializeField] Image dragImage;
-
-
 
     private void Awake()
     {
+        bgImage = GetComponent<Image>();
         dragCanvas = GameObject.FindGameObjectWithTag("Drag Canvas").GetComponent<RectTransform>();
         canvas = GameObject.FindGameObjectWithTag("UI Canvas").GetComponent<RectTransform>();
         controls = new Controls();
@@ -110,6 +128,11 @@ public class GemItem : UIItem
     private void OnEnable()
     {
         controls.Enable();
+
+        controls.actions.MouseMove.performed += _ =>
+        {
+            onMouseMoved();
+        };
     }
 
     private void OnDisable()
@@ -117,8 +140,6 @@ public class GemItem : UIItem
         controls.Disable();
 
     }
-
-
 
     private void Update()
     {

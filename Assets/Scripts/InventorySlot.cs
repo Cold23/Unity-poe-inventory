@@ -6,11 +6,10 @@ using TMPro;
 
 public class InventorySlot : DropArea
 {
-    [SerializeField]
-    RectTransform itemParent;
+
     [SerializeField]
     GameObject initialItem;
-    GameObject itemInSlot;
+    UIItem itemInSlot;
     RectTransform rectTransform;
     Inventory belongsTo;
     TMP_Text text;
@@ -28,18 +27,17 @@ public class InventorySlot : DropArea
         rectTransform = GetComponent<RectTransform>();
         if (initialItem != null)
         {
-            itemInSlot = GameObject.Instantiate(initialItem, transform);
+            var obj = GameObject.Instantiate(initialItem, transform);
+            itemInSlot = obj.GetComponent<UIItem>();
         }
     }
 
     public virtual bool CheckItemFits(UIItem item) {
         bool fits = true;
-        Debug.Log("currently on pos: " +position.ToString());
         for (var i = 0; i < item.occupiesSpots.Count; i ++) {
             var newPos = position + item.occupiesSpots[i];
             var isEmpty = belongsTo.isSlotEmptyAtPos(newPos);
             if(!isEmpty) {
-                Debug.Log(newPos);
                 fits = false;
                 break;
             }
@@ -65,24 +63,34 @@ public class InventorySlot : DropArea
 
     }
 
-    public virtual void setItem(GameObject item)
+    public virtual void setItem(UIItem item)
     {
-        itemInSlot = item;
-        itemInSlot.transform.SetParent(itemParent);
+        for (var i = 0; i < item.occupiesSpots.Count; i++)
+        {
+            belongsTo.setSlotItem(this.position + item.occupiesSpots[i], item);
+        }
+        itemInSlot.transform.SetParent(transform.parent.parent);
+        itemInSlot.transform.SetAsLastSibling();
         var rect = itemInSlot.GetComponent<RectTransform>();
-        rect.anchoredPosition = new Vector2(itemParent.rect.width / 2 - rect.rect.width / 2, -(itemParent.rect.height / 2 - rect.rect.height / 2 +rect.rect.height));
-
-        var itemScript = item.GetComponent<UIItem>();
-        itemScript.setOrigin(this);
-
+        rect.anchoredPosition = rectTransform.anchoredPosition - new Vector2(+30,rect.rect.height-30);
+        item.setOrigin(this);
     }
 
-    public void removeItem()
+    public virtual void setSlotItem(UIItem item) {
+        itemInSlot = item;
+    }
+
+    public virtual void onItemRemoved()
     {
-        itemInSlot = null;
+        var lastSlotItem = itemInSlot;
+        itemInSlot.setOrigin(null);
+        for (var i = 0; i < lastSlotItem.occupiesSpots.Count; i++)
+        {
+            belongsTo.removeSlotItem(this.position + lastSlotItem.occupiesSpots[i]);
+        }
     }
 
-    public GameObject getItem()
+    public UIItem getItem()
     {
         return itemInSlot;
     }

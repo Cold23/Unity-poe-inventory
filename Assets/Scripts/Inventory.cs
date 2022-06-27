@@ -9,9 +9,21 @@ public class Inventory : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
     [SerializeField] protected int inventorySize = 60;
     [SerializeField] protected GameObject emptySlotPrefab;
     [SerializeField] protected int itemSize = 60;
+    protected Dictionary<Vector2Int, InventorySlotData> slotData;
+   
     protected void setSize(int size)
     {
         this.inventorySize = size;
+    }
+
+    public void setSlotItem(Vector2Int pos, UIItem item){
+        slotData[pos].inventorySlot.setSlotItem(item);
+    }
+
+    public void removeSlotItem(Vector2Int pos)
+    {
+        slotData[pos].inventorySlot.setSlotItem(null);
+
     }
 
     protected int getSize()

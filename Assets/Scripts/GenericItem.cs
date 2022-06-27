@@ -4,14 +4,13 @@ using UnityEngine;
 using UnityEngine.UI;
 public class GenericItem : UIItem
 {
-    Controls controls;
     [SerializeField]
     Image mainItemImage;
 
 
-
     private void Awake()
     {
+        bgImage = GetComponent<Image>();
         dragCanvas = GameObject.FindGameObjectWithTag("Drag Canvas").GetComponent<RectTransform>();
         canvas = GameObject.FindGameObjectWithTag("UI Canvas").GetComponent<RectTransform>();
         controls = new Controls();

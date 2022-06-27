@@ -24,7 +24,6 @@ public class InventorySlotData
 public class UserInventory : Inventory
 {
     RectTransform rect;
-    Dictionary<Vector2Int, InventorySlotData> slotData;
     protected override void init()
     {
         slotData = new Dictionary<Vector2Int, InventorySlotData>(); ;

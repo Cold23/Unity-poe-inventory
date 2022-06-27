@@ -6,11 +6,11 @@ public static class MouseObject
 {
     static bool dragging = false;
     static DropArea hoveredDropArea;
-    static GameObject draggingObject;
+    static UIItem draggingItem;
     static Inventory mouseOverInventory;
 
     public static bool Dragging { get => dragging; set => dragging = value; }
-    public static GameObject DraggingObject { get => draggingObject; set => draggingObject = value; }
+    public static UIItem DraggingObject { get => draggingItem; set => draggingItem = value; }
 
     public static void setHovered(DropArea area)
     {
@@ -30,19 +30,21 @@ public static class MouseObject
         mouseOverInventory = null;
     }
 
-    public static void set(GameObject obj)
+    public static void set(UIItem obj)
     {
         dragging = true;
-        draggingObject = obj;
+        draggingItem = obj;
     }
 
     public static void clear()
     {
-        if (hoveredDropArea != null)
+        var slotToBePlacedAt = draggingItem.getHovered();
+        if (slotToBePlacedAt != null)
         {
-            hoveredDropArea.OnDrop();
+            slotToBePlacedAt.OnDrop();
+            // hoveredDropArea.OnDrop();
         }
         dragging = false;
-        draggingObject = null;
+        draggingItem = null;
     }
 }
