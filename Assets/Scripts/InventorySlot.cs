@@ -12,17 +12,14 @@ public class InventorySlot : DropArea
     UIItem itemInSlot;
     RectTransform rectTransform;
     Inventory belongsTo;
-    TMP_Text text;
     Vector2Int position = Vector2Int.zero;
 
     public virtual void setPos(Vector2Int pos) {
         this.position = pos;
-        text.text = pos.x.ToString() + "," + pos.y.ToString();
     }
 
     protected virtual void Awake()
     {
-        text = GetComponentInChildren<TMP_Text>();
         belongsTo = GetComponentInParent<Inventory>();
         rectTransform = GetComponent<RectTransform>();
         if (initialItem != null)
@@ -48,18 +45,9 @@ public class InventorySlot : DropArea
     public override void OnDrop()
     {
         var itemObject = MouseObject.DraggingObject;
-        var itemScript = itemObject.GetComponent<UIItem>();
-        var itemOrigin = itemScript.getOrigin();
-        if (itemOrigin != null && itemInSlot != null)
-        {
-            var temp = itemInSlot;
-            setItem(itemObject);
-            itemOrigin.setItem(temp);
-        }
-        else
-        {
-            setItem(itemObject);
-        }
+        var itemOrigin = itemObject.getOrigin();
+        itemOrigin?.onItemRemoved();
+        setItem(itemObject);
 
     }
 

@@ -4,12 +4,11 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class UIItem : TooltipHoverObject, IDraggableItem
+public class UIItem : ItemHover, IDraggableItem
 {
     protected Controls controls;
     public List<Vector2Int> occupiesSpots;
     protected RectTransform rectTransform;
-    protected bool isBeingDragged = false;
     protected RectTransform canvas;
     protected RectTransform dragCanvas;
     Color baseColor = new Color(0.6f, 0.6f, 0.6f, 0.4f);
@@ -17,10 +16,40 @@ public class UIItem : TooltipHoverObject, IDraggableItem
     protected InventorySlot originatedFrom;
     protected bool fitsInventory = false;
     protected InventorySlot hoveredSlot;
+    [SerializeField]
+
+    protected GameObject dragObject;
+    DragItem activeDragObject;
+    [SerializeField]
+    protected Sprite itemSprite;
+
+    private void OnEnable()
+    {
+        controls.Enable();
+
+        controls.actions.MouseMove.performed += _ =>
+        {
+            onMouseMoved();
+        };
+    }
+
+    private void OnDisable()
+    {
+        controls.Disable();
+
+    }
 
     public void setOrigin(InventorySlot from)
     {
         originatedFrom = from;
+        bgImage.color = baseColor;
+
+    }
+
+    public override void onMouseOut()
+    {
+        
+        bgImage.color = baseColor;
     }
 
     public InventorySlot getOrigin()
@@ -37,22 +66,30 @@ public class UIItem : TooltipHoverObject, IDraggableItem
         gameObject.GetComponent<Image>().raycastTarget = true;
     }
 
+    public override void onMouseOver( ) {
+        var color = baseColor;
+        color.a = 0.8f;
+        bgImage.color = color;
+    }
+
     public void OnPointerDown(PointerEventData eventData)
     {
-        originatedFrom?.onItemRemoved();
+        var gameObject = GameObject.Instantiate(dragObject, dragCanvas);
+        activeDragObject = gameObject.GetComponent<DragItem>();
+        activeDragObject.setData(itemSprite, rectTransform.sizeDelta);
         DisableRaycast();
         MouseObject.set(this);
-        isBeingDragged = true;
-        transform.SetParent(dragCanvas);
-        transform.SetAsLastSibling();
+
+        activeDragObject.transform.SetParent(dragCanvas);
+        activeDragObject.transform.SetAsLastSibling();
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
         EnableRaycast();
         MouseObject.clear();
-        isBeingDragged = false;
-
+        Destroy(activeDragObject.gameObject);
+        activeDragObject = null;
     }
 
     public InventorySlot getHovered() {
@@ -61,7 +98,7 @@ public class UIItem : TooltipHoverObject, IDraggableItem
 
     public override void onMouseMoved()
     {
-        if(!isBeingDragged) return;
+        if(activeDragObject == null) return;
 
         PointerEventData evData = new PointerEventData(EventSystem.current);
 
@@ -81,10 +118,10 @@ public class UIItem : TooltipHoverObject, IDraggableItem
             fitsInventory = slotObject.CheckItemFits(this);
             if(fitsInventory){
                 hoveredSlot = slotObject;
-                bgImage.color = new Color(0,1,0,0.4f);
+                activeDragObject.setColor(new Color(0, 1, 0, 0.4f));
             }else {
                 hoveredSlot = null;
-                bgImage.color = new Color(1,0,0,0.4f);
+                activeDragObject.setColor(new Color(1, 0, 0, 0.4f));
             }
             return false;
         });
@@ -99,9 +136,6 @@ public class UIItem : TooltipHoverObject, IDraggableItem
 
 public class GemItem : UIItem
 {
-
-    [SerializeField] Image dragImage;
-
     private void Awake()
     {
         bgImage = GetComponent<Image>();
@@ -111,8 +145,9 @@ public class GemItem : UIItem
         rectTransform = GetComponent<RectTransform>();
     }
 
-    public override void onShowTooltip()
+    public override void onMouseOver()
     {
+        base.onMouseOver();
         var chars = "ABCDEFGH IJKLMNO PQRSTUVW XYZa bcdef ghijklm nopqrstuvwxyz0123456789     ";
         var stringChars = new char[Random.Range(80, 400)];
 
@@ -125,56 +160,11 @@ public class GemItem : UIItem
         TooltipManager.instance.showTooltip("Rain gem", finalString, rectTransform.position, rectTransform.sizeDelta, gameObject.GetInstanceID());
     }
 
-    private void OnEnable()
-    {
-        controls.Enable();
+ 
 
-        controls.actions.MouseMove.performed += _ =>
-        {
-            onMouseMoved();
-        };
-    }
 
-    private void OnDisable()
-    {
-        controls.Disable();
 
-    }
-
-    private void Update()
-    {
-        if (isBeingDragged)
-        {
-            var mouse = controls.actions.Mouse.ReadValue<Vector2>() - new Vector2(rectTransform.rect.width / 2, rectTransform.rect.height / 2);
-            setSelfPosition(mouse);
-        }
-    }
-
-    private void setSelfPosition(Vector2 position)
-    {
-        position.y -= canvas.rect.height;
-        var pos = new Vector2((position.x / rectTransform.lossyScale.x), (position.y / rectTransform.lossyScale.y)); // convert to current canvas position
-
-        if (pos.x < 0)
-        {
-            pos.x = 0;
-        }
-        else if (pos.x > canvas.rect.width - rectTransform.rect.width)
-        {
-            pos.x = canvas.rect.width - rectTransform.rect.width;
-        }
-
-        if (pos.y > -rectTransform.rect.height)
-        {
-            pos.y = -rectTransform.rect.height;
-        }
-        else if (pos.y < -canvas.rect.height)
-        {
-            pos.y = -canvas.rect.height;
-        }
-
-        rectTransform.anchoredPosition = pos;
-    }
+    
 
 }
 

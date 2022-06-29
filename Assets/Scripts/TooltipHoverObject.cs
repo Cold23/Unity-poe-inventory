@@ -4,15 +4,20 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 
-public class TooltipHoverObject : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerMoveHandler
+public class ItemHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerMoveHandler
 {
     public void OnPointerEnter(PointerEventData eventData)
     {
-        onShowTooltip();
+        onMouseOver();
 
     }
 
-    public virtual void onShowTooltip()
+    public virtual void onMouseOver()
+    {
+
+    }
+
+    public virtual void onMouseOut()
     {
 
     }
@@ -21,10 +26,10 @@ public class TooltipHoverObject : MonoBehaviour, IPointerEnterHandler, IPointerE
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        onMouseOut();
         TooltipManager.instance.hideTooltip(true);
 
     }
-
     public void OnPointerMove(PointerEventData eventData)
     {
     }

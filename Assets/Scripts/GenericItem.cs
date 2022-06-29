@@ -29,8 +29,9 @@ public class GenericItem : UIItem
 
     }
 
-    public override void onShowTooltip()
+    public override void onMouseOver()
     {
+        base.onMouseOver();
         var chars = "ABCDEFGH IJKLMNO PQRSTUVW XYZa bcdef ghijklm nopqrstuvwxyz0123456789     ";
         var stringChars = new char[80];
 
@@ -42,57 +43,5 @@ public class GenericItem : UIItem
         var finalString = new string(stringChars);
         TooltipManager.instance.showTooltip("Supa armor", finalString, rectTransform.position, rectTransform.sizeDelta, gameObject.GetInstanceID());
     }
-
-    private void OnEnable()
-    {
-        controls.Enable();
-        
-        controls.actions.MouseMove.performed += _ =>
-        {
-            onMouseMoved();
-        };
-    }
-
-    private void OnDisable()
-    {
-        controls.Disable();
-
-    }
-
-
-
-    private void Update()
-    {
-        if (isBeingDragged)
-        {
-            var mouse = controls.actions.Mouse.ReadValue<Vector2>() - new Vector2(rectTransform.rect.width / 2, rectTransform.rect.height / 2);
-            setSelfPosition(mouse);
-        }
-    }
-
-    private void setSelfPosition(Vector2 position)
-    {
-        position.y -= canvas.rect.height;
-        var pos = new Vector2((position.x / rectTransform.lossyScale.x), (position.y / rectTransform.lossyScale.y)); // convert to current canvas position
-
-        if (pos.x < 0)
-        {
-            pos.x = 0;
-        }
-        else if (pos.x > canvas.rect.width - rectTransform.rect.width)
-        {
-            pos.x = canvas.rect.width - rectTransform.rect.width;
-        }
-
-        if (pos.y > -rectTransform.rect.height)
-        {
-            pos.y = -rectTransform.rect.height;
-        }
-        else if (pos.y < -canvas.rect.height)
-        {
-            pos.y = -canvas.rect.height;
-        }
-
-        rectTransform.anchoredPosition = pos;
-    }
+    
 }
