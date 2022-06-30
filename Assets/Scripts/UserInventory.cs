@@ -9,8 +9,14 @@ public class InventorySlotData
     public RectTransform rect;
     public Vector2Int position;
 
-    public bool isEmpty() {
+    public bool isEmpty()
+    {
         return inventorySlot.getItem() == null;
+    }
+
+    public UIItem getItem()
+    {
+        return inventorySlot.getItem();
     }
 
     public InventorySlotData(InventorySlot slot, RectTransform rect, Vector2Int position)
@@ -26,7 +32,7 @@ public class UserInventory : Inventory
     RectTransform rect;
     protected override void init()
     {
-        slotData = new Dictionary<Vector2Int, InventorySlotData>(); ;
+        slotData = new Dictionary<Vector2Int, InventorySlotData>();
         rect = GetComponent<RectTransform>();
         var itemsPerRow = Mathf.FloorToInt(rect.rect.width / itemSize);
         var yIndex = 0;
@@ -47,11 +53,10 @@ public class UserInventory : Inventory
             }
         }
     }
-    public override bool isSlotEmptyAtPos(Vector2Int pos)
+    public override InventorySlotData getSlotItem(Vector2Int pos)
     {
         slotData.TryGetValue(pos, out var slot);
-        if(slot == null) return false;
-        return slot.isEmpty();
+        return slot;
     }
     private void Awake()
     {

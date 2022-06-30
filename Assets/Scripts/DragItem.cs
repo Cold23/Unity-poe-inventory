@@ -13,25 +13,31 @@ public class DragItem : MonoBehaviour
     Controls controls;
     RectTransform canvas;
 
-    private void Awake() {
+    private void Awake()
+    {
         bgImage = GetComponent<Image>();
         rectTransform = GetComponent<RectTransform>();
         controls = new Controls();
         canvas = GameObject.FindGameObjectWithTag("UI Canvas").GetComponent<RectTransform>();
     }
-    public void setColor(Color color) {
+    public void setColor(Color color)
+    {
         bgImage.color = color;
     }
 
-    private void OnEnable() {
+    private void OnEnable()
+    {
+        setPositionToMouse();
         controls.Enable();
     }
 
-    private void OnDisable() {
+    private void OnDisable()
+    {
         controls.Disable();
     }
 
-    public void setData(Sprite sprite,Vector2 size){
+    public void setData(Sprite sprite, Vector2 size)
+    {
         rectTransform.sizeDelta = size;
         itemImage.sprite = sprite;
         isBeingDragged = true;
@@ -64,11 +70,17 @@ public class DragItem : MonoBehaviour
         rectTransform.anchoredPosition = pos;
     }
 
-    private void Update() {
+    void setPositionToMouse()
+    {
+        var mouse = controls.actions.Mouse.ReadValue<Vector2>() - new Vector2(rectTransform.rect.width / 2, rectTransform.rect.height / 2);
+        setSelfPosition(mouse);
+    }
+
+    private void Update()
+    {
         if (isBeingDragged)
         {
-            var mouse = controls.actions.Mouse.ReadValue<Vector2>() - new Vector2(rectTransform.rect.width / 2, rectTransform.rect.height / 2);
-            setSelfPosition(mouse);
+            setPositionToMouse();
         }
     }
 }

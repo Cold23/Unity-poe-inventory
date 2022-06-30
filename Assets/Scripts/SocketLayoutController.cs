@@ -48,6 +48,8 @@ public class SocketLayoutController : Inventory
     // ovveride inventory init func for sockets
     protected override void init()
     {
+        slotData = new Dictionary<Vector2Int, InventorySlotData>();
+
         rectTransform.sizeDelta = new Vector2(150, 150);
         setSize(Random.Range(1, maxSocketCount + 1));
 
@@ -59,9 +61,10 @@ public class SocketLayoutController : Inventory
         for (int i = 0; i < getSize(); i++)
         {
             var socketObject = GameObject.Instantiate(emptySlotPrefab, transform);
+            var socketScript = socketObject.GetComponent<InventorySlot>();
             RectTransform socketRect = (RectTransform)socketObject.transform;
             socketTransforms.Add(socketRect);
-            LayoutSocket(socketRect, i);
+            LayoutSocket(socketRect, socketScript, i);
             if (i > 0)
             {
                 connectSockets(socketRect, socketTransforms[i - 1], i);
@@ -75,8 +78,10 @@ public class SocketLayoutController : Inventory
         ((RectTransform)connectionsParent).sizeDelta = rectSize;
     }
 
-    void LayoutSocket(RectTransform socketRect, int i)
+    void LayoutSocket(RectTransform socketRect, InventorySlot data, int i)
     {
+        data.setPos(positions[i]);
+        slotData.Add(positions[i], new InventorySlotData(data, (RectTransform)data.transform, positions[i]));
         RectTransform socketRectChild = (RectTransform)socketRect.GetChild(0);
         socketRect.sizeDelta = Vector2.one * itemSize;
         socketRectChild.sizeDelta = Vector2.one * itemSize * .9f;

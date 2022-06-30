@@ -8,13 +8,14 @@ public class InventorySlot : DropArea
 {
 
     [SerializeField]
-    GameObject initialItem;
-    UIItem itemInSlot;
-    RectTransform rectTransform;
-    Inventory belongsTo;
-    Vector2Int position = Vector2Int.zero;
+    protected GameObject initialItem;
+    protected UIItem itemInSlot;
+    protected RectTransform rectTransform;
+    protected Inventory belongsTo;
+    protected Vector2Int position = Vector2Int.zero;
 
-    public virtual void setPos(Vector2Int pos) {
+    public virtual void setPos(Vector2Int pos)
+    {
         this.position = pos;
     }
 
@@ -29,12 +30,16 @@ public class InventorySlot : DropArea
         }
     }
 
-    public virtual bool CheckItemFits(UIItem item) {
+    public virtual bool CheckCanPlaceItem(UIItem item)
+    {
         bool fits = true;
-        for (var i = 0; i < item.occupiesSpots.Count; i ++) {
+        for (var i = 0; i < item.occupiesSpots.Count; i++)
+        {
             var newPos = position + item.occupiesSpots[i];
-            var isEmpty = belongsTo.isSlotEmptyAtPos(newPos);
-            if(!isEmpty) {
+            var slotData = belongsTo.getSlotItem(newPos);
+            var slotItem = slotData?.getItem();
+            if (slotData == null || (slotItem != null && slotItem != item))
+            {
                 fits = false;
                 break;
             }
@@ -60,11 +65,12 @@ public class InventorySlot : DropArea
         itemInSlot.transform.SetParent(transform.parent.parent);
         itemInSlot.transform.SetAsLastSibling();
         var rect = itemInSlot.GetComponent<RectTransform>();
-        rect.anchoredPosition = rectTransform.anchoredPosition - new Vector2(+30,rect.rect.height-30);
+        rect.anchoredPosition = rectTransform.anchoredPosition + new Vector2(-rectTransform.rect.width / 2, rectTransform.rect.height / 2);
         item.setOrigin(this);
     }
 
-    public virtual void setSlotItem(UIItem item) {
+    public virtual void setSlotItem(UIItem item)
+    {
         itemInSlot = item;
     }
 

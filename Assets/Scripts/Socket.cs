@@ -6,14 +6,27 @@ using UnityEngine.EventSystems;
 
 public class Socket : InventorySlot
 {
-    [SerializeField]
-    GameObject gemItem;
-
     RectTransform canvas;
     GemItem currentDragObject;
     protected override void Awake()
     {
         base.Awake();
+    }
+
+    public override bool CheckCanPlaceItem(UIItem item)
+    {
+        var gemObject = item.gameObject.GetComponent<GemItem>();
+        if (gemObject == null) return false;
+        return itemInSlot == null;
+    }
+
+    public override void setItem(UIItem item)
+    {
+        setSlotItem(item);
+        itemInSlot.transform.SetParent(transform.GetChild(0));
+        var rect = itemInSlot.GetComponent<RectTransform>();
+        rect.anchoredPosition = new Vector2(-rect.rect.width / 2 + rectTransform.rect.width / 2, rect.rect.height / 2 - rectTransform.rect.height / 2);
+        item.setOrigin(this);
     }
 }
 

@@ -1,4 +1,4 @@
-using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,7 +14,7 @@ public class UIItem : ItemHover, IDraggableItem
     Color baseColor = new Color(0.6f, 0.6f, 0.6f, 0.4f);
     protected Image bgImage;
     protected InventorySlot originatedFrom;
-    protected bool fitsInventory = false;
+    protected bool canPlaceItem = false;
     protected InventorySlot hoveredSlot;
     [SerializeField]
 
@@ -48,7 +48,7 @@ public class UIItem : ItemHover, IDraggableItem
 
     public override void onMouseOut()
     {
-        
+
         bgImage.color = baseColor;
     }
 
@@ -66,7 +66,8 @@ public class UIItem : ItemHover, IDraggableItem
         gameObject.GetComponent<Image>().raycastTarget = true;
     }
 
-    public override void onMouseOver( ) {
+    public override void onMouseOver()
+    {
         var color = baseColor;
         color.a = 0.8f;
         bgImage.color = color;
@@ -92,45 +93,67 @@ public class UIItem : ItemHover, IDraggableItem
         activeDragObject = null;
     }
 
-    public InventorySlot getHovered() {
+    public InventorySlot getHovered()
+    {
         return hoveredSlot;
+    }
+
+    public virtual void checkSlots(List<InventorySlot> slots)
+    {
+        foreach (var slot in slots)
+        {
+            canPlaceItem = slot.CheckCanPlaceItem(this);
+            if (canPlaceItem)
+            {
+                hoveredSlot = slot;
+                activeDragObject.setColor(new Color(0, 1, 0, 0.4f));
+                return;
+            }
+            else
+            {
+                hoveredSlot = null;
+                activeDragObject.setColor(new Color(1, 0, 0, 0.4f));
+            }
+        }
     }
 
     public override void onMouseMoved()
     {
-        if(activeDragObject == null) return;
+        if (activeDragObject == null) return;
 
         PointerEventData evData = new PointerEventData(EventSystem.current);
 
-        evData.position = controls.actions.Mouse.ReadValue<Vector2>() + new Vector2(-rectTransform.rect.width/2,rectTransform.rect.height/2);
+        evData.position = controls.actions.Mouse.ReadValue<Vector2>() + new Vector2(-rectTransform.rect.width / 2, rectTransform.rect.height / 2);
 
 
         List<RaycastResult> results = new List<RaycastResult>();
 
         EventSystem.current.RaycastAll(evData, results);
-
-        results.RemoveAll((el) =>
+        if (results.Count <= 0)
         {
-            var slotObject = el.gameObject.GetComponent<InventorySlot>();
-            if(slotObject == null) {
-                return true;
-            }
-            fitsInventory = slotObject.CheckItemFits(this);
-            if(fitsInventory){
-                hoveredSlot = slotObject;
-                activeDragObject.setColor(new Color(0, 1, 0, 0.4f));
-            }else {
-                hoveredSlot = null;
-                activeDragObject.setColor(new Color(1, 0, 0, 0.4f));
-            }
-            return false;
-        });
-        if(results.Count <= 0) {
             hoveredSlot = null;
-            fitsInventory = false;
-            bgImage.color = baseColor;
+            canPlaceItem = false;
+            activeDragObject.setColor(baseColor);
+            return;
         }
-        
+        List<InventorySlot> slots = results.Select((el, index) =>
+        {
+            var script = el.gameObject.GetComponent<InventorySlot>();
+            if (script != null)
+                return script;
+            else
+            {
+                return null;
+            }
+        }).Where((el) => el != null).ToList<InventorySlot>();
+        if (slots.Count <= 0)
+        {
+            activeDragObject.setColor(baseColor);
+            return;
+        }
+        checkSlots(slots);
+
+
     }
 }
 
@@ -160,11 +183,11 @@ public class GemItem : UIItem
         TooltipManager.instance.showTooltip("Rain gem", finalString, rectTransform.position, rectTransform.sizeDelta, gameObject.GetInstanceID());
     }
 
- 
 
 
 
-    
+
+
 
 }
 
