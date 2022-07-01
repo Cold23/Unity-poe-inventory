@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// The transparent object that appear after dragging an object
+/// </summary>
 public class DragItem : MonoBehaviour
 {
     Image bgImage;

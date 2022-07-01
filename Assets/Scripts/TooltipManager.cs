@@ -5,6 +5,10 @@ using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
 
+/// <summary>
+/// Singleton class that can be called by any item to hide or show the tooltip
+/// and change the tooltip title and description
+/// </summary>
 public class TooltipManager : MonoBehaviour
 {
     public static TooltipManager instance;

@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-
+/// <summary>
+/// Inventory base class
+/// </summary>
 public class Inventory : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] protected int inventorySize = 60;

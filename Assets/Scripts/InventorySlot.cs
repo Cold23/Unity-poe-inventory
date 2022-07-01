@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-
+/// <summary>
+/// Inventory Slot base class
+/// </summary>
 public class InventorySlot : DropArea
 {
 

@@ -4,6 +4,10 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 
+/// <summary>
+/// Items that have tooltips ( all of them in my case ) should inherit from this class
+/// to have a tooltip shown
+/// </summary>
 public class ItemHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerMoveHandler
 {
     public void OnPointerEnter(PointerEventData eventData)
@@ -22,7 +26,7 @@ public class ItemHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 
     }
 
-    public virtual void onMouseMoved(){}
+    public virtual void onMouseMoved() { }
 
     public void OnPointerExit(PointerEventData eventData)
     {

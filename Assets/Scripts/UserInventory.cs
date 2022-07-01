@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+/// <summary>
+/// Data from each slot of an inventory
+/// </summary>
 [System.Serializable]
 public class InventorySlotData
 {
@@ -27,6 +31,9 @@ public class InventorySlotData
     }
 }
 
+/// <summary>
+/// User inventory 
+/// </summary>
 public class UserInventory : Inventory
 {
     RectTransform rect;

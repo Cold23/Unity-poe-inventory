@@ -90,9 +90,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77bd0931be02d41f38f38d89cd3ffc01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemParent: {fileID: 4364944293725261669}
   initialItem: {fileID: 0}
-  gemItem: {fileID: 4364944293543898988}
 --- !u!1 &4364944293725261668
 GameObject:
   m_ObjectHideFlags: 0

@@ -2,21 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+
+/// <summary>
+/// Example of an item with different on mouse over bevahiour that UIItem
+/// </summary>
 public class GenericItem : UIItem
 {
     [SerializeField]
     Image mainItemImage;
-
-
-    private void Awake()
-    {
-        bgImage = GetComponent<Image>();
-        dragCanvas = GameObject.FindGameObjectWithTag("Drag Canvas").GetComponent<RectTransform>();
-        canvas = GameObject.FindGameObjectWithTag("UI Canvas").GetComponent<RectTransform>();
-        controls = new Controls();
-        rectTransform = GetComponent<RectTransform>();
-        
-    }
 
     public override void DisableRaycast()
     {
@@ -43,5 +36,5 @@ public class GenericItem : UIItem
         var finalString = new string(stringChars);
         TooltipManager.instance.showTooltip("Supa armor", finalString, rectTransform.position, rectTransform.sizeDelta, gameObject.GetInstanceID());
     }
-    
+
 }

@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Static class Containing values for the current object being dragged etc..
+/// </summary>
 public static class MouseObject
 {
     static bool dragging = false;

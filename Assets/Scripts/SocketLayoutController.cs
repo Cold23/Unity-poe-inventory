@@ -1,9 +1,16 @@
-using System.Collections;
+using System;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Inventory for the sockets.
+/// Handle things such as what gems are in the socket, reforging socket properties etc.
+/// </summary>
 public class SocketLayoutController : Inventory
 {
+    [SerializeField]
+    UIItem belongsToItem;
     [SerializeField]
     Transform connectionsParent;
     [SerializeField]
@@ -51,7 +58,7 @@ public class SocketLayoutController : Inventory
         slotData = new Dictionary<Vector2Int, InventorySlotData>();
 
         rectTransform.sizeDelta = new Vector2(150, 150);
-        setSize(Random.Range(1, maxSocketCount + 1));
+        setSize(UnityEngine.Random.Range(1, maxSocketCount + 1));
 
         var rows = Mathf.CeilToInt(getSize() / 2f);
         spacingY = (rectTransform.sizeDelta.y - (rows * itemSize)) / (rows - 1);
@@ -61,7 +68,7 @@ public class SocketLayoutController : Inventory
         for (int i = 0; i < getSize(); i++)
         {
             var socketObject = GameObject.Instantiate(emptySlotPrefab, transform);
-            var socketScript = socketObject.GetComponent<InventorySlot>();
+            var socketScript = socketObject.GetComponent<Socket>();
             RectTransform socketRect = (RectTransform)socketObject.transform;
             socketTransforms.Add(socketRect);
             LayoutSocket(socketRect, socketScript, i);
@@ -78,7 +85,7 @@ public class SocketLayoutController : Inventory
         ((RectTransform)connectionsParent).sizeDelta = rectSize;
     }
 
-    void LayoutSocket(RectTransform socketRect, InventorySlot data, int i)
+    void LayoutSocket(RectTransform socketRect, Socket data, int i)
     {
         data.setPos(positions[i]);
         slotData.Add(positions[i], new InventorySlotData(data, (RectTransform)data.transform, positions[i]));
@@ -86,12 +93,14 @@ public class SocketLayoutController : Inventory
         socketRect.sizeDelta = Vector2.one * itemSize;
         socketRectChild.sizeDelta = Vector2.one * itemSize * .9f;
         socketRect.anchoredPosition = new Vector2(itemSize * positions[i].x + positions[i].x * spacingX, -itemSize * positions[i].y - spacingY * positions[i].y) + new Vector2(itemSize / 2, -itemSize / 2);
+        Array allGemColors = Enum.GetValues(typeof(GemColor));
+        data.setGemColor((GemColor)allGemColors.GetValue(UnityEngine.Random.Range(0, 3)));
     }
 
 
     protected void Awake()
     {
-
+        belongsToItem.bindSockets(this);
         rectTransform = GetComponent<RectTransform>();
         init();
 
@@ -120,7 +129,7 @@ public class SocketLayoutController : Inventory
     private void connectSockets(RectTransform child, RectTransform prevChild, int i)
     {
 
-        var randomNumber = Random.Range(0f, 1f);
+        var randomNumber = UnityEngine.Random.Range(0f, 1f);
         if (randomNumber > 0.5f) { return; }
         var center = (child.anchoredPosition + prevChild.anchoredPosition) / 2;
         var line = GameObject.Instantiate(connectionLinePrefab, connectionsParent);

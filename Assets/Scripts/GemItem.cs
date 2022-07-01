@@ -4,14 +4,25 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
+public enum GemColor
+{
+    red,
+    green,
+    blue,
+    white
+}
+/// <summary>
+/// Base class that all items that have a ui representation should inherit from
+/// </summary>
 public class UIItem : ItemHover, IDraggableItem
 {
+    protected SocketLayoutController sockets;
     protected Controls controls;
     public List<Vector2Int> occupiesSpots;
     protected RectTransform rectTransform;
     protected RectTransform canvas;
     protected RectTransform dragCanvas;
-    Color baseColor = new Color(0.6f, 0.6f, 0.6f, 0.4f);
+    protected Color baseColor = new Color(0.6f, 0.6f, 0.6f, 0.4f);
     protected Image bgImage;
     protected InventorySlot originatedFrom;
     protected bool canPlaceItem = false;
@@ -19,9 +30,27 @@ public class UIItem : ItemHover, IDraggableItem
     [SerializeField]
 
     protected GameObject dragObject;
-    DragItem activeDragObject;
+    protected DragItem activeDragObject;
     [SerializeField]
     protected Sprite itemSprite;
+    public virtual void Awake()
+    {
+        bgImage = GetComponent<Image>();
+        dragCanvas = GameObject.FindGameObjectWithTag("Drag Canvas").GetComponent<RectTransform>();
+        canvas = GameObject.FindGameObjectWithTag("UI Canvas").GetComponent<RectTransform>();
+        controls = new Controls();
+        rectTransform = GetComponent<RectTransform>();
+    }
+
+    public virtual bool hasSockets()
+    {
+        return this.sockets != null;
+    }
+
+    public virtual void bindSockets(SocketLayoutController sockets)
+    {
+        this.sockets = sockets;
+    }
 
     private void OnEnable()
     {
@@ -152,21 +181,16 @@ public class UIItem : ItemHover, IDraggableItem
             return;
         }
         checkSlots(slots);
-
-
     }
 }
 
+/// <summary>
+/// A gem type item that can be socketed into sockets ( duh ..)
+/// </summary>
 public class GemItem : UIItem
 {
-    private void Awake()
-    {
-        bgImage = GetComponent<Image>();
-        dragCanvas = GameObject.FindGameObjectWithTag("Drag Canvas").GetComponent<RectTransform>();
-        canvas = GameObject.FindGameObjectWithTag("UI Canvas").GetComponent<RectTransform>();
-        controls = new Controls();
-        rectTransform = GetComponent<RectTransform>();
-    }
+    public GemColor gemColor;
+
 
     public override void onMouseOver()
     {
@@ -182,16 +206,11 @@ public class GemItem : UIItem
         var finalString = new string(stringChars);
         TooltipManager.instance.showTooltip("Rain gem", finalString, rectTransform.position, rectTransform.sizeDelta, gameObject.GetInstanceID());
     }
-
-
-
-
-
-
-
 }
 
-
+/// <summary>
+/// Interface for implementing dragging of items ( maybe other objects too )
+/// </summary>
 public interface IDraggableItem : IPointerDownHandler, IPointerUpHandler
 {
 }

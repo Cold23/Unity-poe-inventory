@@ -4,19 +4,45 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
+/// <summary>
+/// Customized Inventory slot that represent a socket on a piece of armor/weapon 
+/// </summary>
 public class Socket : InventorySlot
 {
+    GemColor acceptsGemColor;
     RectTransform canvas;
     GemItem currentDragObject;
+    Image gemColorImage;
     protected override void Awake()
     {
         base.Awake();
+        gemColorImage = GetComponent<Image>();
+    }
+
+    public void setGemColor(GemColor gemColor)
+    {
+        this.acceptsGemColor = gemColor;
+        switch (gemColor)
+        {
+            case GemColor.red:
+                gemColorImage.color = Color.red;
+                break;
+            case GemColor.green:
+                gemColorImage.color = Color.green;
+                break;
+            case GemColor.blue:
+                gemColorImage.color = Color.blue;
+                break;
+            case GemColor.white:
+                gemColorImage.color = Color.white;
+                break;
+        }
     }
 
     public override bool CheckCanPlaceItem(UIItem item)
     {
         var gemObject = item.gameObject.GetComponent<GemItem>();
-        if (gemObject == null) return false;
+        if (gemObject == null || (acceptsGemColor != GemColor.white && acceptsGemColor != gemObject.gemColor)) return false;
         return itemInSlot == null;
     }
 
