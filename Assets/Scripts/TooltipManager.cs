@@ -83,7 +83,8 @@ public class TooltipManager : MonoBehaviour
         title.text = titleText;
         text.text = content;
         resizeTooltip();
-        setTooltipPosition(position + new Vector2(-rectTransform.rect.width / 2 + sizeDelta.x / 2, sizeDelta.y + 20f));
+        // position is in world space ( this mean that if you have the canvas scale set to scale with screen size this will be the position of the object of the current size of the canvas and not the size you were working with and thus will not work correctly with other screen resolution ) so it needs to be divided by the lossy scale ( in this case the canvas lossy scale is ok because all canvas are of the same size at all times )
+        setTooltipPosition(position / canvas.lossyScale + new Vector2(-rectTransform.rect.width / 2 + sizeDelta.x / 2, 20f));
 
         title.DOFade(1f, 0.2f).SetId("fade");
         text.DOFade(1f, 0.2f).SetId("fade");
@@ -103,10 +104,9 @@ public class TooltipManager : MonoBehaviour
         controls.Disable();
     }
 
-    private void setTooltipPosition(Vector2 position)
+    private void setTooltipPosition(Vector2 pos)
     {
 
-        var pos = new Vector2((position.x / rectTransform.lossyScale.x), (position.y / rectTransform.lossyScale.y)); // convert to current canvas position
 
         if (pos.x < 0)
         {

@@ -3,12 +3,17 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 /// <summary>
 /// Inventory for the sockets.
 /// Handle things such as what gems are in the socket, reforging socket properties etc.
 /// </summary>
+/// 
 public class SocketLayoutController : Inventory
 {
+
+    List<Socket> childSockets = new List<Socket>();
+
     [SerializeField]
     UIItem belongsToItem;
     [SerializeField]
@@ -55,6 +60,8 @@ public class SocketLayoutController : Inventory
     // ovveride inventory init func for sockets
     protected override void init()
     {
+        childSockets = new List<Socket>();
+
         slotData = new Dictionary<Vector2Int, InventorySlotData>();
 
         rectTransform.sizeDelta = new Vector2(150, 150);
@@ -85,8 +92,23 @@ public class SocketLayoutController : Inventory
         ((RectTransform)connectionsParent).sizeDelta = rectSize;
     }
 
+    public bool areSocketsEmpty()
+    {
+        // check if any socket is not empty
+        foreach (var socket in childSockets)
+        {
+            if (socket.getItem() != null)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     void LayoutSocket(RectTransform socketRect, Socket data, int i)
     {
+        childSockets.Add(data);
         data.setPos(positions[i]);
         slotData.Add(positions[i], new InventorySlotData(data, (RectTransform)data.transform, positions[i]));
         RectTransform socketRectChild = (RectTransform)socketRect.GetChild(0);
@@ -108,6 +130,7 @@ public class SocketLayoutController : Inventory
 
     public void RerollSocketsAndConnections()
     {
+        if (!areSocketsEmpty()) return;
         ClearSockets();
         init();
     }

@@ -49,9 +49,9 @@ public class DragItem : MonoBehaviour
 
     private void setSelfPosition(Vector2 position)
     {
-        position.y -= canvas.rect.height;
-        var pos = new Vector2((position.x / rectTransform.lossyScale.x), (position.y / rectTransform.lossyScale.y) + rectTransform.rect.height); // convert to current canvas position
-
+        var pos = new Vector2((position.x / canvas.lossyScale.x), (position.y / canvas.lossyScale.y)); // convert to current canvas position
+        // limit x position to fit on screen
+        pos.y -= canvas.rect.height;
         if (pos.x < 0)
         {
             pos.x = 0;
@@ -60,22 +60,24 @@ public class DragItem : MonoBehaviour
         {
             pos.x = canvas.rect.width - rectTransform.rect.width;
         }
+        // limit yPos to fit on screen
 
-        if (pos.y > -rectTransform.rect.height)
+        if (pos.y > 0)
         {
-            pos.y = -rectTransform.rect.height;
+            pos.y = 0;
         }
-        else if (pos.y < -canvas.rect.height)
+        else if (pos.y < -canvas.rect.height + rectTransform.rect.height)
         {
-            pos.y = -canvas.rect.height;
+            pos.y = -canvas.rect.height + rectTransform.rect.height;
         }
 
+        // set position
         rectTransform.anchoredPosition = pos;
     }
 
     void setPositionToMouse()
     {
-        var mouse = controls.actions.Mouse.ReadValue<Vector2>() - new Vector2(rectTransform.rect.width / 2, rectTransform.rect.height / 2);
+        var mouse = controls.actions.Mouse.ReadValue<Vector2>() - new Vector2(rectTransform.rect.width * rectTransform.lossyScale.x / 2, -rectTransform.rect.height * rectTransform.lossyScale.y / 2);
         setSelfPosition(mouse);
     }
 

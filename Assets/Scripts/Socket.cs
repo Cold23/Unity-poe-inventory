@@ -10,8 +10,6 @@ using UnityEngine.EventSystems;
 public class Socket : InventorySlot
 {
     GemColor acceptsGemColor;
-    RectTransform canvas;
-    GemItem currentDragObject;
     Image gemColorImage;
     protected override void Awake()
     {
@@ -45,6 +43,8 @@ public class Socket : InventorySlot
         if (gemObject == null || (acceptsGemColor != GemColor.white && acceptsGemColor != gemObject.gemColor)) return false;
         return itemInSlot == null;
     }
+
+
 
     public override void setItem(UIItem item)
     {

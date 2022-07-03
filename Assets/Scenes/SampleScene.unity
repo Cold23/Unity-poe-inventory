@@ -388,19 +388,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8dec78aadbe9c4714b38d5ca4e3295e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  occupiesSpots:
-  - {x: 0, y: 0}
-  - {x: 1, y: 0}
-  - {x: 0, y: 1}
-  - {x: 1, y: 1}
-  - {x: 0, y: 2}
-  - {x: 1, y: 2}
-  - {x: 2, y: 0}
-  - {x: 2, y: 1}
-  - {x: 2, y: 2}
+  itemData: {fileID: 11400000, guid: 925619e8e9b5c4823ab65f7ba661a088, type: 2}
+  itemImage: {fileID: 1562071571}
   dragObject: {fileID: 8280958436466049391, guid: 9f7a7156fd8dc4ae090dc7303663edac, type: 3}
-  itemSprite: {fileID: 442927774, guid: a12b31a3594174c7fb78313b1736f332, type: 3}
-  mainItemImage: {fileID: 155601455}
 --- !u!114 &155601455
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -596,7 +586,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 16.875
+  orthographic size: 11.25
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -741,11 +731,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c1340ed34f9843f5b498b6a11865eef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  occupiesSpots:
-  - {x: 0, y: 0}
+  itemData: {fileID: 11400000, guid: c0ffd2fa993b74aaab6401094054715e, type: 2}
+  itemImage: {fileID: 823128432}
   dragObject: {fileID: 8280958436466049391, guid: 9f7a7156fd8dc4ae090dc7303663edac, type: 3}
-  itemSprite: {fileID: 1838481171, guid: a12b31a3594174c7fb78313b1736f332, type: 3}
-  ItemCount: 10
   text: {fileID: 1103089408}
 --- !u!1 &610181680
 GameObject:
@@ -1404,10 +1392,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 106e2b20fee91479cb66a7df4f6493b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  occupiesSpots:
-  - {x: 0, y: 0}
+  itemData: {fileID: 11400000, guid: 276da708813a743ea9b62a057647a426, type: 2}
+  itemImage: {fileID: 832787282}
   dragObject: {fileID: 8280958436466049391, guid: 9f7a7156fd8dc4ae090dc7303663edac, type: 3}
-  itemSprite: {fileID: 2026169410, guid: a0dfa905015784899b9e9b524adcbdc4, type: 3}
   gemColor: 0
 --- !u!1 &1329633865
 GameObject:
@@ -1621,7 +1608,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 442927774, guid: a12b31a3594174c7fb78313b1736f332, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1764,7 +1751,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 1920, y: 1080}
@@ -1787,7 +1774,7 @@ Canvas:
   m_RenderMode: 0
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
-  m_PixelPerfect: 0
+  m_PixelPerfect: 1
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
@@ -1944,7 +1931,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 1920, y: 1080}
@@ -1967,7 +1954,7 @@ Canvas:
   m_RenderMode: 0
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
-  m_PixelPerfect: 0
+  m_PixelPerfect: 1
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
@@ -2081,7 +2068,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 1920, y: 1080}
@@ -2277,7 +2264,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 1920, y: 1080}
@@ -2300,7 +2287,7 @@ Canvas:
   m_RenderMode: 0
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
-  m_PixelPerfect: 0
+  m_PixelPerfect: 1
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0

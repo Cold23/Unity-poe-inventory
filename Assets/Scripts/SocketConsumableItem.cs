@@ -12,15 +12,15 @@ using TMPro;
 /// </summary>
 public class SocketConsumableItem : UIItem
 {
-    [SerializeField]
-    int ItemCount = 25;
+    int ItemCount;
     [SerializeField]
     TMP_Text text;
+    UIItem currentActiveItem;
 
     public override void Awake()
     {
         base.Awake();
-        setItemCount(ItemCount);
+        setItemCount(itemData.startAmount);
 
     }
 
@@ -30,26 +30,46 @@ public class SocketConsumableItem : UIItem
         text.text = ItemCount > 1 ? ItemCount.ToString() : "";
 
     }
-    public override void onMouseOver()
-    {
-        var text = "Reforged the amount of sockets on an item";
-
-        TooltipManager.instance.showTooltip("Jewelers Orb ", text, rectTransform.position, rectTransform.sizeDelta, gameObject.GetInstanceID());
-    }
 
     public virtual void onItemUsed()
     {
+        currentActiveItem.getSockets().RerollSocketsAndConnections();
+        currentActiveItem = null;
         setItemCount(ItemCount - 1);
+        if (ItemCount <= 0)
+        {
+            Destroy(this.gameObject);
+        }
 
+    }
+
+    public override void OnPointerUp(PointerEventData eventData)
+    {
+        EnableRaycast();
+        Destroy(activeDragObject.gameObject);
+        activeDragObject = null;
+
+        // if over socket item use on socketedItem
+        // else place item ( if possible )
+        if (currentActiveItem != null)
+        {
+            MouseObject.clearActiveItem();
+            onItemUsed();
+            return;
+        }
+        MouseObject.placeActiveItem();
     }
 
     public override void onMouseMoved()
     {
+        base.onMouseMoved();
+
         if (activeDragObject == null) return;
 
         PointerEventData evData = new PointerEventData(EventSystem.current);
 
-        evData.position = controls.actions.Mouse.ReadValue<Vector2>() + new Vector2(-rectTransform.rect.width / 2, rectTransform.rect.height / 2);
+        ///check the mouse position aka center of the dragging item
+        evData.position = controls.actions.Mouse.ReadValue<Vector2>();
 
 
         List<RaycastResult> results = new List<RaycastResult>();
@@ -57,26 +77,26 @@ public class SocketConsumableItem : UIItem
         EventSystem.current.RaycastAll(evData, results);
         if (results.Count <= 0)
         {
-            hoveredSlot = null;
-            canPlaceItem = false;
-            activeDragObject.setColor(baseColor);
+            currentActiveItem = null;
             return;
         }
-        List<InventorySlot> slots = results.Select((el, index) =>
+        List<UIItem> items = results.Select((el, index) =>
         {
-            var script = el.gameObject.GetComponent<InventorySlot>();
+            var script = el.gameObject.GetComponent<UIItem>();
             if (script != null)
                 return script;
             else
             {
                 return null;
             }
-        }).Where((el) => el != null).ToList<InventorySlot>();
-        if (slots.Count <= 0)
+        }).Where((el) => el != null && el.hasSockets() && el.getSockets().areSocketsEmpty()).ToList<UIItem>();
+        if (items.Count <= 0)
         {
-            activeDragObject.setColor(baseColor);
+            currentActiveItem = null;
             return;
         }
-        checkSlots(slots);
+        activeDragObject.setColor(baseColor);
+        currentActiveItem = items[0];
     }
+
 }

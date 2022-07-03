@@ -16,14 +16,18 @@ public enum GemColor
 /// </summary>
 public class UIItem : ItemHover, IDraggableItem
 {
+    [SerializeField]
+    protected ItemBase itemData;
     protected SocketLayoutController sockets;
     protected Controls controls;
-    public List<Vector2Int> occupiesSpots;
     protected RectTransform rectTransform;
     protected RectTransform canvas;
     protected RectTransform dragCanvas;
     protected Color baseColor = new Color(0.6f, 0.6f, 0.6f, 0.4f);
     protected Image bgImage;
+    [SerializeField]
+    protected Image itemImage;
+
     protected InventorySlot originatedFrom;
     protected bool canPlaceItem = false;
     protected InventorySlot hoveredSlot;
@@ -32,7 +36,6 @@ public class UIItem : ItemHover, IDraggableItem
     protected GameObject dragObject;
     protected DragItem activeDragObject;
     [SerializeField]
-    protected Sprite itemSprite;
     public virtual void Awake()
     {
         bgImage = GetComponent<Image>();
@@ -40,6 +43,17 @@ public class UIItem : ItemHover, IDraggableItem
         canvas = GameObject.FindGameObjectWithTag("UI Canvas").GetComponent<RectTransform>();
         controls = new Controls();
         rectTransform = GetComponent<RectTransform>();
+        itemImage.sprite = itemData.itemSprite;
+    }
+
+    public List<Vector2Int> getOccupiesSpots()
+    {
+        return itemData.occupiesSpots;
+    }
+
+    public SocketLayoutController getSockets()
+    {
+        return sockets;
     }
 
     public virtual bool hasSockets()
@@ -87,12 +101,12 @@ public class UIItem : ItemHover, IDraggableItem
     }
     public virtual void DisableRaycast()
     {
-        gameObject.GetComponent<Image>().raycastTarget = false;
+        bgImage.raycastTarget = false;
     }
 
     public virtual void EnableRaycast()
     {
-        gameObject.GetComponent<Image>().raycastTarget = true;
+        bgImage.raycastTarget = true;
     }
 
     public override void onMouseOver()
@@ -100,13 +114,16 @@ public class UIItem : ItemHover, IDraggableItem
         var color = baseColor;
         color.a = 0.8f;
         bgImage.color = color;
+
+        TooltipManager.instance.showTooltip(itemData.itemTitle, itemData.itemDescription, rectTransform.position, rectTransform.sizeDelta,
+        gameObject.GetInstanceID());
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
         var gameObject = GameObject.Instantiate(dragObject, dragCanvas);
         activeDragObject = gameObject.GetComponent<DragItem>();
-        activeDragObject.setData(itemSprite, rectTransform.sizeDelta);
+        activeDragObject.setData(itemData.itemSprite, rectTransform.sizeDelta);
         DisableRaycast();
         MouseObject.set(this);
 
@@ -114,10 +131,10 @@ public class UIItem : ItemHover, IDraggableItem
         activeDragObject.transform.SetAsLastSibling();
     }
 
-    public void OnPointerUp(PointerEventData eventData)
+    public virtual void OnPointerUp(PointerEventData eventData)
     {
         EnableRaycast();
-        MouseObject.clear();
+        MouseObject.placeActiveItem();
         Destroy(activeDragObject.gameObject);
         activeDragObject = null;
     }
@@ -127,7 +144,7 @@ public class UIItem : ItemHover, IDraggableItem
         return hoveredSlot;
     }
 
-    public virtual void checkSlots(List<InventorySlot> slots)
+    public virtual void checkCanBePlaced(List<InventorySlot> slots)
     {
         foreach (var slot in slots)
         {
@@ -152,7 +169,7 @@ public class UIItem : ItemHover, IDraggableItem
 
         PointerEventData evData = new PointerEventData(EventSystem.current);
 
-        evData.position = controls.actions.Mouse.ReadValue<Vector2>() + new Vector2(-rectTransform.rect.width / 2, rectTransform.rect.height / 2);
+        evData.position = controls.actions.Mouse.ReadValue<Vector2>() + new Vector2(-rectTransform.rect.width * rectTransform.lossyScale.x / 2, rectTransform.rect.height * rectTransform.lossyScale.y / 2);
 
 
         List<RaycastResult> results = new List<RaycastResult>();
@@ -178,9 +195,10 @@ public class UIItem : ItemHover, IDraggableItem
         if (slots.Count <= 0)
         {
             activeDragObject.setColor(baseColor);
+            hoveredSlot = null;
             return;
         }
-        checkSlots(slots);
+        checkCanBePlaced(slots);
     }
 }
 
@@ -191,21 +209,6 @@ public class GemItem : UIItem
 {
     public GemColor gemColor;
 
-
-    public override void onMouseOver()
-    {
-        base.onMouseOver();
-        var chars = "ABCDEFGH IJKLMNO PQRSTUVW XYZa bcdef ghijklm nopqrstuvwxyz0123456789     ";
-        var stringChars = new char[Random.Range(80, 400)];
-
-        for (int i = 0; i < stringChars.Length; i++)
-        {
-            stringChars[i] = chars[Random.Range(0, chars.Length)];
-        }
-
-        var finalString = new string(stringChars);
-        TooltipManager.instance.showTooltip("Rain gem", finalString, rectTransform.position, rectTransform.sizeDelta, gameObject.GetInstanceID());
-    }
 }
 
 /// <summary>

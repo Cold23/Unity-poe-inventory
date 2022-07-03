@@ -35,9 +35,10 @@ public class InventorySlot : DropArea
     public virtual bool CheckCanPlaceItem(UIItem item)
     {
         bool fits = true;
-        for (var i = 0; i < item.occupiesSpots.Count; i++)
+        var count = item.getOccupiesSpots().Count;
+        for (var i = 0; i < count; i++)
         {
-            var newPos = position + item.occupiesSpots[i];
+            var newPos = position + item.getOccupiesSpots()[i];
             var slotData = belongsTo.getSlotItem(newPos);
             var slotItem = slotData?.getItem();
             if (slotData == null || (slotItem != null && slotItem != item))
@@ -60,9 +61,11 @@ public class InventorySlot : DropArea
 
     public virtual void setItem(UIItem item)
     {
-        for (var i = 0; i < item.occupiesSpots.Count; i++)
+        var count = item.getOccupiesSpots().Count;
+
+        for (var i = 0; i < count; i++)
         {
-            belongsTo.setSlotItem(this.position + item.occupiesSpots[i], item);
+            belongsTo.setSlotItem(this.position + item.getOccupiesSpots()[i], item);
         }
         itemInSlot.transform.SetParent(transform.parent.parent);
         itemInSlot.transform.SetAsLastSibling();
@@ -80,9 +83,10 @@ public class InventorySlot : DropArea
     {
         var lastSlotItem = itemInSlot;
         itemInSlot.setOrigin(null);
-        for (var i = 0; i < lastSlotItem.occupiesSpots.Count; i++)
+        var count = lastSlotItem.getOccupiesSpots().Count;
+        for (var i = 0; i < count; i++)
         {
-            belongsTo.removeSlotItem(this.position + lastSlotItem.occupiesSpots[i]);
+            belongsTo.removeSlotItem(this.position + lastSlotItem.getOccupiesSpots()[i]);
         }
     }
 

@@ -38,8 +38,13 @@ public static class MouseObject
         dragging = true;
         draggingItem = obj;
     }
+    public static void clearActiveItem()
+    {
+        dragging = false;
+        draggingItem = null;
+    }
 
-    public static void clear()
+    public static void placeActiveItem()
     {
         var slotToBePlacedAt = draggingItem.getHovered();
         if (slotToBePlacedAt != null)
